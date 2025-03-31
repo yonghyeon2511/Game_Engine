@@ -4,7 +4,7 @@
 #include "Editor_Window.h"
 #include "..\\Game_Engine_SOURCE\geApplication.h"
 
-Application app;
+ge::Application application;  // 전역 변수
 
 #define MAX_LOADSTRING 100
 
@@ -26,8 +26,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-
-    app.test();
 
     // TODO: Place code here.
 
@@ -67,18 +65,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
         {
             // 메시지가 없을 경우
+            application.Run();
         }
     }
-
-    // Main message loop:
-    /*while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }*/
 
     return (int)msg.wParam;
 }
@@ -126,6 +115,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, 1280, 700, nullptr, nullptr, hInstance, nullptr);
 
+    application.Initialize(hWnd);
+
     if (!hWnd)
     {
         return FALSE;
@@ -146,6 +137,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_PAINT    - Paint the main window
 //  WM_DESTROY  - post a quit message and return
 //
+
+// 메시지를 처리하는 함수
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -171,33 +164,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
-
-
-        HBRUSH blueBrush = CreateSolidBrush(RGB(0, 0, 255));    // 파란색 브러시 생성
-        HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, blueBrush); // 파란색 브러시 선택, 흰색 브러시 반환
-
-        Rectangle(hdc, 100, 100, 200, 200);                     // 파란색 브러시, 검은색 펜 
-
-        SelectObject(hdc, oldBrush);                            // 흰색 브러시 선택, 파란색 브러시 반환
-        DeleteObject(blueBrush);                                // 파란색 브러시 삭제
-
-
-        HPEN redPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));   // 빨간색 펜 생성
-        HPEN oldPen = (HPEN)SelectObject(hdc, redPen);          // 빨간색 펜 선택, 검은색 펜 반환
-
-        Ellipse(hdc, 200, 200, 300, 300);                       // 흰색 브러시, 빨간색 펜
-
-        SelectObject(hdc, oldPen);                              // 검은색 펜 선택, 빨간색 펜 반환
-        DeleteObject(redPen);                                   // 빨간색 펜 삭제
-
-
-        HBRUSH grayBrush = (HBRUSH)GetStockObject(GRAY_BRUSH);  // 회색 브러시 생성
-        oldBrush = (HBRUSH)SelectObject(hdc, grayBrush);        // 회색 브러시 선택, 흰색 브러시 반환
-
-        Rectangle(hdc, 400, 400, 500, 500);                     // 회색 브러시, 검은색 펜
-
-        SelectObject(hdc, oldBrush);                            // 흰색 브러시 선택, 회색 브러시 반환
-
 
         // TODO: Add any drawing code that uses hdc here...
         EndPaint(hWnd, &ps);
